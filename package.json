@@ -7,7 +7,7 @@
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/davidsawyer/reddit-imgur-uploader.git"
+    "url": "https://github.com/davidsawyer/airbnb-price-per-night-correcter.git"
   },
   "engines": {
     "node": "^5.3"
