@@ -9,7 +9,7 @@ In order to get up and running locally, you'll need to:
 1. pull down the project
 1. if you use nvm, run `nvm use` to make sure you're on a compatible version of node
 1. run `npm install` from the project root
-1. make sure gulp installed globally: `npm install -g gulp`)
+1. make sure gulp installed globally: `npm install -g gulp`
 1. run `gulp` (this will build the js file and css file that Chrome will use and continue to listen to changes to source files)
 1. go to `chrome://extensions` in Chrome
 1. make sure "Developer mode" is on
