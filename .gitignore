@@ -1,0 +1,8 @@
+.DS_Store
+
+node_modules
+
+dist/index.css
+dist/index.js
+
+upload-me-to-the-chrome-web-store*

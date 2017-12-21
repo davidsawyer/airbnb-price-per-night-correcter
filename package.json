@@ -1,0 +1,25 @@
+{
+  "name": "airbnb-price-per-night-correcter",
+  "version": "0.1.0",
+  "description": "Gives you the real price per night of an Airbnb stay after accounting for any and all fees",
+  "main": "index.js",
+  "author": "David Sawyer",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidsawyer/reddit-imgur-uploader.git"
+  },
+  "engines": {
+    "node": "^5.3"
+  },
+  "dependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-sequence": "^0.4.6",
+    "gulp-zip": "^4.0.0",
+    "jquery": "^2.1.4",
+    "run-sequence": "^1.2.2"
+  }
+}

@@ -1,0 +1,10 @@
+div#airbnb-pernight-price-correcter-checkmark {
+    display: inline-block;
+    height: 14px;
+    width: 18px;
+    margin-left: 5px;
+    background-size: 100%;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMjAwJyBoZWlnaHQ9JzIwMCcgZmlsbD0iIzAwMDAwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDk1LjQ1MyAxMDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDk1LjQ1MyAxMDAiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxnPjxnPjxwb2x5Z29uIHBvaW50cz0iOTQuNTg3LDI3LjQ4IDMxLjY1Nyw4Ni4xNSAzMS4yMTcsODUuNjggMTguODQ3LDcyLjQxIDAuNTY2LDUyLjgxIDE0LjEwNiw0MC4xOSAzMi4zODcsNTkuNzkgODEuNzc2LDEzLjc0ICAgIi8+PC9nPjwvZz48L3N2Zz4=);
+}
