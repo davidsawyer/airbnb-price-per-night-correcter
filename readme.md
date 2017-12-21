@@ -1,4 +1,4 @@
-# Airbnb Price Per Night Correcter
+# [Airbnb Price Per Night Correcter](https://chrome.google.com/webstore/detail/airbnb-price-per-night-co/lijeilcglmadpkbengpkfnkpmcehecfe)
 
 *A Chrome Extension that gives you the real price per night of an Airbnb stay after accounting for any and all fees*
 
