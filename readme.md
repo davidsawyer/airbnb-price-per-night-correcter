@@ -2,6 +2,8 @@
 
 *A Chrome Extension that gives you the real price per night of an Airbnb stay after accounting for any and all fees*
 
+If you like this project, [send me a tip 🙏🏼](https://www.paypal.me/davidsawyer1/2)
+
 ## building and running locally
 
 In order to get up and running locally, you'll need to:
