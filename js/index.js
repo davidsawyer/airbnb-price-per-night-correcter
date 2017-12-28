@@ -33,7 +33,7 @@ const VIEWPORT = Object.freeze({
 let lastViewportState
 let currentViewportState
 
-const fullPageObserver = new MutationObserver(function() {
+const fullPageObserver = new MutationObserver(() => {
     const $form = $('#book_it_form')
     if ($form.length) {
         currentViewportState = $form.closest('#room').length ?
@@ -74,7 +74,7 @@ fullPageObserver.observe($('body')[0], { childList: true, subtree: true })
 const CHECKMARK_ID = 'airbnb-pernight-price-correcter-checkmark'
 
 function handleMutations(mutations) {
-    mutations.forEach(function(mutation) {
+    mutations.forEach(mutation => {
         if (mutation.addedNodes.length > 0) {
             // don't do anything when we add the checkmark div, or otherwise the browser will get
             // caught in an infinite loop
