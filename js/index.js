@@ -102,6 +102,7 @@ function modifyPerNightPrice() {
 
     const $originalPerNightPriceDiv = $form.prev().find(':contains("per night")').first()
     if (! $originalPerNightPriceDiv.length) {
+        console.log('Can\'t find "per night", or it\'s not in English. Stopping!')
         return
     }
 
