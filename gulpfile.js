@@ -20,7 +20,10 @@ const paths = {
 
 gulp.task('css', () =>
     gulp.src(paths.styles)
-        .pipe(autoprefixer({ browsers: ['last 10 Chrome versions'] }))
+        .pipe(autoprefixer({ browsers: [
+            'last 10 Chrome versions',
+            'last 10 Firefox versions'
+        ] }))
         .pipe(gulp.dest(paths.destination))
 )
 
@@ -37,7 +40,7 @@ gulp.task('wrap', () =>
 
 gulp.task('zip', () =>
     gulp.src([`${temp}/**/*`, 'manifest.json'])
-        .pipe(zip('upload-me-to-the-chrome-web-store.zip'))
+        .pipe(zip('upload-me-to-the-browser-web-stores.zip'))
         .pipe(gulp.dest('.'))
 )
 
