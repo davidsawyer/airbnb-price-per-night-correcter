@@ -106,7 +106,9 @@ function modifyPerNightPrice() {
         return
     }
 
-    const originalPerNightPrice = safeParseInt($originalPerNightPriceDiv.text())
+    const originalPerNightPriceDivText = $originalPerNightPriceDiv.text()
+    const priceEndIndex = originalPerNightPriceDivText.indexOf('per night')
+    const originalPerNightPrice = originalPerNightPriceDivText.substring(0, priceEndIndex).trim()
 
     console.log('original per night price:', $originalPerNightPriceDiv.text())
 
@@ -125,14 +127,20 @@ function modifyPerNightPrice() {
 
         console.log('number of nights:', numOfNights)
 
+        const currencySign = $originalPerNightPriceSpan.text().substring(0, 1)
+
+        console.log('currency sign:', currencySign)
+
         const realPricePerNight = totalPrice / numOfNights
-        const formattedRealPricePerNight = Number.isInteger(realPricePerNight) ?
-            realPricePerNight.toString() :
-            realPricePerNight.toFixed(2)
+        const formattedRealPricePerNight = currencySign + (
+            Number.isInteger(realPricePerNight) ?
+                realPricePerNight.toLocaleString('en-US') :
+                realPricePerNight.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        )
 
         console.log('real price per night:', formattedRealPricePerNight)
 
-        $originalPerNightPriceSpan.text(`$${formattedRealPricePerNight}`)
+        $originalPerNightPriceSpan.text(formattedRealPricePerNight)
         $originalPerNightSpan.text(WITH_FEES_TEXT)
         $originalPerNightSpan.after(`<div id="${CHECKMARK_ID}"></div>`)
     } else {

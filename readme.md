@@ -21,8 +21,8 @@ In order to get up and running locally, you'll need to:
 1. choose the project root directory for Chrome or a zipped directory by gulp for Firefox (via `gulp prod`), and you should be good to go!
 
 ## todos
+- [ ] handle all currencies
 - [ ] include banner on top of page to notify user if the scraping is broken
-- [ ] handle non-US currencies
 
 <p align="center">
   <img src="/dist/images/demo.gif" width="390px" align="center" alt="demo" />
