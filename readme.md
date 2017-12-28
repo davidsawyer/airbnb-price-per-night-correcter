@@ -6,6 +6,8 @@
 
 [Chrome](https://chrome.google.com/webstore/detail/airbnb-price-per-night-co/lijeilcglmadpkbengpkfnkpmcehecfe) and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/airbnb-price-per-night-correct/)
 
+If you like this project, [send me a tip 🙏🏼](https://www.paypal.me/davidsawyer1/2)
+
 ## building and running locally
 
 In order to get up and running locally, you'll need to:
