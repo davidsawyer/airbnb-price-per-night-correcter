@@ -26,6 +26,7 @@ In order to get up and running locally, you'll need to:
 - [ ] handle all currencies
 - [ ] include banner on top of page to notify user if the scraping is broken
 - [ ] Safari version
+- [ ] investigate showing the correct price per night for all listings on the search page
 
 <p align="center">
   <img src="/dist/images/demo.gif" width="390px" align="center" alt="demo" />
