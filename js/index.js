@@ -127,7 +127,14 @@ function modifyPerNightPrice() {
 
         console.log('number of nights:', numOfNights)
 
-        const currencySign = $originalPerNightPriceSpan.text().substring(0, 1)
+        let currencySign = $originalPerNightPriceSpan.text().substring(0, 1)
+        try {
+            let reduxBootstrapData = $('script[data-hypernova-key=spaspabundlejs]') && $('script[data-hypernova-key=spaspabundlejs]')[0].innerHTML
+            reduxBootstrapData = $.parseJSON(reduxBootstrapData.substring(4, reduxBootstrapData.length-3))
+            currencySign = reduxBootstrapData.bootstrapData.spa_footer.currencyCountries.filter((item) => item.code === reduxBootstrapData.userAttributes.curr)[0].unicode_symbol
+        } catch (e) {
+            console.error('error while getting dynamic currencySign: ', e)
+        }
 
         console.log('currency sign:', currencySign)
 
