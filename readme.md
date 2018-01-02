@@ -19,11 +19,10 @@ In order to get up and running locally, you'll need to:
 1. run `gulp` (this will build the js file and css file that the browser will use and will continue to listen to changes to source files)
 1. go to `chrome://extensions` in Chrome or `about:debugging` in Firefox
 1. make sure "Developer mode" is on if you're on Chrome
-1. click "Load unpacked extension..." on Chrome or "Load Temporary Add-on"
+1. click "Load unpacked extension..." on Chrome or "Load Temporary Add-on" on Firefox
 1. choose the project root directory for Chrome or a zipped directory by gulp for Firefox (via `gulp prod`), and you should be good to go!
 
 ## todos
-- [ ] handle all currencies
 - [ ] include banner on top of page to notify user if the scraping is broken
 - [ ] Safari version
 - [ ] investigate showing the correct price per night for all listings on the search page
