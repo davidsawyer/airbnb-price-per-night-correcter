@@ -1,5 +1,4 @@
 const autoprefixer = require('gulp-autoprefixer'),
-    concat = require('gulp-concat'),
     del = require('del'),
     gulp = require('gulp'),
     runSequence = require('run-sequence'),
@@ -29,7 +28,6 @@ gulp.task('css', () =>
 
 gulp.task('scripts', () =>
     gulp.src(paths.indexScripts)
-        .pipe(concat('index.js'))
         .pipe(gulp.dest(paths.destination))
 )
 
