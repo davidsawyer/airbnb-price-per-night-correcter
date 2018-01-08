@@ -24,6 +24,7 @@ In order to get up and running locally, you'll need to:
 
 ## todos
 - [ ] add prettier
+- [ ] add French translation (and general infrastructure to support i18n)
 - [ ] handle all currencies
 - [ ] include banner on top of page to notify user if the scraping is broken
 - [ ] Safari version
