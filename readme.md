@@ -23,6 +23,7 @@ In order to get up and running locally, you'll need to:
 1. choose the project root directory for Chrome or a zipped directory by gulp for Firefox (via `gulp prod`), and you should be good to go!
 
 ## todos
+- [ ] add prettier
 - [ ] handle all currencies
 - [ ] include banner on top of page to notify user if the scraping is broken
 - [ ] Safari version
