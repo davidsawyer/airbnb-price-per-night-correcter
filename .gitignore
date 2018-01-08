@@ -2,7 +2,7 @@
 
 node_modules
 
-dist/index.css
-dist/index.js
+dist/*.css
+dist/*.js
 
 upload-me-to-the-browser-web-stores*
