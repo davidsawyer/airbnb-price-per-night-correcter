@@ -1,6 +1,6 @@
 {
   "name": "airbnb-price-per-night-correcter",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Gives you the real price per night of an Airbnb stay after accounting for any and all fees",
   "main": "index.js",
   "author": "David Sawyer",
