@@ -73,6 +73,7 @@ fullPageObserver.observe($('body')[0], { childList: true, subtree: true })
 
 
 const CHECKMARK_ID = 'airbnb-pernight-price-correcter-checkmark'
+const HAS_BEEN_MODIFIED_CLASS = 'airbnb-pernight-price-correcter-has-modified-this'
 
 function handleMutations(mutations) {
     mutations.forEach(mutation => {
@@ -85,7 +86,8 @@ function handleMutations(mutations) {
 
             // TODO: Maybe make this check a little more robust. Checking for something that we're
             // also adding could cause an infinite loop of events and crash the browser.
-            if (mutation.addedNodes[0].classList && mutation.addedNodes[0].classList.length == 0) {
+            if (mutation.addedNodes[0].classList
+                && ! [...mutation.addedNodes[0].classList.values()].includes(HAS_BEEN_MODIFIED_CLASS)) {
                 modifyPerNightPrice()
             }
         }
@@ -141,11 +143,11 @@ function modifyPerNightPrice() {
 
         console.log('real price per night:', formattedRealPricePerNight)
 
-        $originalPerNightPriceSpan.text(formattedRealPricePerNight)
-        $originalPerNightSpan.text(WITH_FEES_TEXT)
-        $originalPerNightSpan.after(`<div id="${CHECKMARK_ID}"></div>`)
+        $originalPerNightPriceSpan.text(formattedRealPricePerNight).addClass(HAS_BEEN_MODIFIED_CLASS)
+        $originalPerNightSpan.text(WITH_FEES_TEXT).addClass(HAS_BEEN_MODIFIED_CLASS)
+        $originalPerNightSpan.after(`<div id="${CHECKMARK_ID}" class={"${HAS_BEEN_MODIFIED_CLASS}"}></div>`)
     } else {
-        $originalPerNightSpan.text(WITHOUT_FEES_TEXT)
+        $originalPerNightSpan.text(WITHOUT_FEES_TEXT).addClass(HAS_BEEN_MODIFIED_CLASS)
     }
 
     return true
