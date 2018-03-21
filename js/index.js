@@ -48,11 +48,12 @@ const fullPageObserver = new MutationObserver(() => {
 
             // attempt to modify the price in case we're returning to a wider viewport from
             // a skinner one where there was no visible book_it_form
-            modifyPerNightPrice()
-
-            const containerPerNightPriceDiv = $form.prev().find('div').first()[0]
-            containerPerNightPriceDivObserver = new MutationObserver(handleMutations)
-            containerPerNightPriceDivObserver.observe(containerPerNightPriceDiv, { childList: true, subtree: true })
+            const result = modifyPerNightPrice()
+            if (result) {
+                const containerPerNightPriceDiv = $form.prev().find('div').first()[0]
+                containerPerNightPriceDivObserver = new MutationObserver(handleMutations)
+                containerPerNightPriceDivObserver.observe(containerPerNightPriceDiv, { childList: true, subtree: true })
+            }
         }
     } else if (! $form.length && containerPerNightPriceDivObserver) { // if there's a skinny viewport
         containerPerNightPriceDivObserver = undefined
@@ -97,13 +98,13 @@ function modifyPerNightPrice() {
 
     const $form = $('#book_it_form')
     if (! $form.length) {
-        return
+        return false
     }
 
     const $originalPerNightPriceDiv = $form.prev().find(':contains("per night")').first()
     if (! $originalPerNightPriceDiv.length) {
         console.log('Can\'t find "per night", or it\'s not in English. Stopping!')
-        return
+        return false
     }
 
     const originalPerNightPriceDivText = $originalPerNightPriceDiv.text()
@@ -146,6 +147,8 @@ function modifyPerNightPrice() {
     } else {
         $originalPerNightSpan.text(WITHOUT_FEES_TEXT)
     }
+
+    return true
 }
 
 // strip non digits, then return the int
