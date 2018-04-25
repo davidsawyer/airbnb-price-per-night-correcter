@@ -24,6 +24,7 @@ In order to get up and running locally, you'll need to:
 
 ## todos
 - [ ] handle monthly price
+- [ ] add support for Airbnb Plus
 - [ ] add prettier
 - [ ] add French translation (and general infrastructure to support i18n)
 - [ ] handle all currencies
