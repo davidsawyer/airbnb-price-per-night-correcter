@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Airbnb Price Per Night Correcter",
     "description": "Gives you the real price per night of an Airbnb stay after accounting for any and all fees",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "author": "David Sawyer",
     "content_scripts": [
         {
@@ -63,19 +63,12 @@
                 "*://*.airbnb.com/rooms/*",
                 "*://*.airbnb.co.ve/rooms/*"
             ],
-            "css": [
-                "dist/index.css"
-            ],
-            "js": [
-                "dist/jquery.js",
-                "dist/index.js"
-            ],
+            "css": ["dist/index.css"],
+            "js": ["dist/jquery.js", "dist/index.js"],
             "run_at": "document_end"
         }
     ],
-    "web_accessible_resources": [
-        "dist/images/*"
-    ],
+    "web_accessible_resources": ["dist/images/*"],
     "icons": {
         "16": "dist/images/icon32.png",
         "48": "dist/images/icon96.png",

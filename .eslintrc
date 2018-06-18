@@ -26,26 +26,11 @@
                 "SwitchCase": 1
             }
         ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "semi": [
-            "error",
-            "never"
-        ],
-        "object-curly-spacing": [
-            "error",
-            "always"
-        ],
-        "space-in-parens": [
-            "error",
-            "never"
-        ],
-        "comma-dangle": [
-            "error",
-            "never"
-        ],
+        "linebreak-style": ["error", "unix"],
+        "semi": ["error", "never"],
+        "object-curly-spacing": ["error", "always"],
+        "space-in-parens": ["error", "never"],
+        "comma-dangle": ["error", "never"],
         "no-trailing-spaces": "error",
         "curly": "error",
         "keyword-spacing": [
@@ -56,10 +41,7 @@
             }
         ],
         "space-before-blocks": "error",
-        "space-before-function-paren": [
-            "error",
-            "never"
-        ],
+        "space-before-function-paren": ["error", "never"],
         "space-infix-ops": "error",
         "no-multi-spaces": "error",
         "key-spacing": [
@@ -77,10 +59,16 @@
                 "after": true
             }
         ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "no-console": "off"
+        "quotes": ["error", "single"],
+        "no-console": "off",
+        "space-unary-ops": [
+            2,
+            {
+                "overrides": {
+                    "!": true,
+                    "!!": true
+                }
+            }
+        ]
     }
 }
