@@ -31,6 +31,7 @@ In order to get up and running locally, you'll need to:
 ## todos
 
 -   [ ] handle monthly price
+-   [ ] add support for Airbnb Plus
 -   [ ] handle all currencies
 -   [ ] investigate showing the correct price per night for all listings on the search page
 
