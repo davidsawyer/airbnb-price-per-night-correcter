@@ -2,6 +2,10 @@
 
 _A browser extension that gives you the real price per night of an Airbnb stay after accounting for any and all fees_
 
+<p align="center">
+  <img src="/misc/demo.gif" width="390px" align="center" alt="demo" />
+</p>
+
 ## where to find it
 
 [Chrome](https://chrome.google.com/webstore/detail/airbnb-price-per-night-co/lijeilcglmadpkbengpkfnkpmcehecfe) and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/airbnb-price-per-night-correct/)
@@ -35,10 +39,6 @@ In order to get up and running locally, you'll need to:
 -   [ ] add Spanish translation
 -   [ ] handle all currencies
 -   [ ] investigate showing the correct price per night for all listings on the search page
-
-<p align="center">
-  <img src="/misc/demo.gif" width="390px" align="center" alt="demo" />
-</p>
 
 ## thanks
 
