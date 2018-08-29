@@ -134,7 +134,7 @@ function modifyPerNightPrice() {
 
     console.log('original per night price:', $originalPerNightPriceDiv.text())
 
-    const totalPrice = safeParseInt(
+    const totalPrice = safeParseFloat(
         $form
             .find(`div:contains("${TOTAL}")`)
             .last()
@@ -154,7 +154,7 @@ function modifyPerNightPrice() {
 
     // if the length of stay has already been set by the user
     if (numOfNightsText) {
-        const numOfNights = safeParseInt(numOfNightsText.match(/ x \d+/g, '')[0])
+        const numOfNights = safeParseFloat(numOfNightsText.match(/ x \d+/g, '')[0])
 
         console.log('number of nights:', numOfNights)
 
@@ -190,7 +190,14 @@ function modifyPerNightPrice() {
     return true
 }
 
-// strip non digits, then return the int
-function safeParseInt(str) {
-    return parseInt(str.replace(/\D/g, ''), 10)
+// strip characters that aren't digit or the decimal separator then return the float
+function safeParseFloat(str) {
+    const decimalSeparator = Intl.NumberFormat(languageCode)
+        .format('1.1')
+        .charAt(1)
+    const cleanPattern = new RegExp(`[^0-9${decimalSeparator}]`, 'g')
+    const cleanedNumberString = str.replace(cleanPattern, '')
+    const normalizedNumberString = cleanedNumberString.replace(decimalSeparator, '.')
+
+    return parseFloat(normalizedNumberString)
 }
