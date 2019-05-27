@@ -135,16 +135,18 @@ function modifyPerNightPrice() {
         .prev()
         .find(`:contains("${PER_NIGHT}")`)
         .first()
-    if (! $originalPerNightPriceDiv.length) {
+    if (!$originalPerNightPriceDiv.length) {
         console.log('Can\'t find "per night", or it\'s not in English. Stopping!')
         return false
     }
 
     const originalPerNightPriceDivText = $originalPerNightPriceDiv.text()
+    // there a hidden div before the nightly price that typically says something like "Price:"
+    const priceStartIndex = originalPerNightPriceDivText.indexOf(':') + 1
     const priceEndIndex = originalPerNightPriceDivText.indexOf(PER_NIGHT)
-    const originalPerNightPrice = originalPerNightPriceDivText.substring(0, priceEndIndex).trim()
+    const originalPerNightPrice = originalPerNightPriceDivText.substring(priceStartIndex, priceEndIndex).trim()
 
-    console.log('original per night price:', $originalPerNightPriceDiv.text())
+    console.log('original per night price:', originalPerNightPrice)
 
     const totalPrice = safeParseFloat(
         $form
@@ -156,8 +158,10 @@ function modifyPerNightPrice() {
 
     console.log('total price:', totalPrice)
 
-    const $originalPerNightPriceSpan = $originalPerNightPriceDiv.find(`:contains("${originalPerNightPrice}")`).last()
-    const $originalPerNightSpan = $originalPerNightPriceDiv.find(`:contains("${PER_NIGHT}")`).last()
+    const $originalPerNightPriceSpan = $originalPerNightPriceDiv
+        .find(`:contains("${originalPerNightPrice}"):not(:has(*))`)
+        .last()
+    const $originalPerNightSpan = $originalPerNightPriceDiv.find(`:contains(${PER_NIGHT}):not(:has(*))`).last()
 
     const numOfNightsText = $form
         .find(':contains(" x ")')
