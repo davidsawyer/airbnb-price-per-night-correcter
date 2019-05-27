@@ -1,8 +1,8 @@
 const DEBUG_MODE = false
 const oldCL = console.log
-console.log = function() {
+console.log = function(...params) {
     if (DEBUG_MODE) {
-        oldCL.apply(this, arguments)
+        oldCL.apply(this, params)
     }
 }
 
@@ -37,7 +37,7 @@ let containerPerNightPriceDivObserver
 const VIEWPORT = Object.freeze({
     SKINNY: 'SKINNY',
     MEDIUM: 'MEDIUM',
-    WIDE: 'WIDE'
+    WIDE: 'WIDE',
 })
 
 let lastViewportState
@@ -46,15 +46,17 @@ let currentViewportState
 const fullPageObserver = new MutationObserver(() => {
     const $form = $('#book_it_form')
     if ($form.length) {
-        currentViewportState = $form.closest('#room').length
-            ? VIEWPORT.WIDE
-            : $form.closest('div[aria-modal="true"]').length
-                ? VIEWPORT.MEDIUM
-                : VIEWPORT.SKINNY
+        if ($form.closest('#room').length) {
+            currentViewportState = VIEWPORT.WIDE
+        } else if ($form.closest('div[aria-modal="true"]').length) {
+            currentViewportState = VIEWPORT.MEDIUM
+        } else {
+            currentViewportState = VIEWPORT.SKINNY
+        }
 
         console.log(`${lastViewportState} --> ${currentViewportState}`)
 
-        if (! containerPerNightPriceDivObserver || currentViewportState != lastViewportState) {
+        if (!containerPerNightPriceDivObserver || currentViewportState !== lastViewportState) {
             // attempt to modify the price in case we're returning to a wider viewport from
             // a skinner one where there was no visible book_it_form
             const result = modifyPerNightPrice()
@@ -67,7 +69,7 @@ const fullPageObserver = new MutationObserver(() => {
                 containerPerNightPriceDivObserver.observe(containerPerNightPriceDiv, { childList: true, subtree: true })
             }
         }
-    } else if (! $form.length && containerPerNightPriceDivObserver) {
+    } else if (!$form.length && containerPerNightPriceDivObserver) {
         // if there's a skinny viewport
         containerPerNightPriceDivObserver = undefined
 
@@ -94,7 +96,7 @@ function handleMutations(mutations) {
         if (mutation.addedNodes.length > 0) {
             // don't do anything when we add the checkmark div, or otherwise the browser will get
             // caught in an infinite loop
-            if (mutation.addedNodes[0].id && mutation.addedNodes[0].id == CHECKMARK_ID) {
+            if (mutation.addedNodes[0].id && mutation.addedNodes[0].id === CHECKMARK_ID) {
                 return
             }
 
@@ -102,7 +104,7 @@ function handleMutations(mutations) {
             // also adding could cause an infinite loop of events and crash the browser.
             if (
                 mutation.addedNodes[0].classList &&
-                ! [...mutation.addedNodes[0].classList.values()].includes(HAS_BEEN_MODIFIED_CLASS)
+                ![...mutation.addedNodes[0].classList.values()].includes(HAS_BEEN_MODIFIED_CLASS)
             ) {
                 modifyPerNightPrice()
             }
@@ -115,7 +117,7 @@ function modifyPerNightPrice() {
     console.log('modifyPerNightPrice.............................')
 
     const $form = $('#book_it_form')
-    if (! $form.length) {
+    if (!$form.length) {
         return false
     }
 
@@ -159,7 +161,7 @@ function modifyPerNightPrice() {
         console.log('number of nights:', numOfNights)
 
         const currencyMatches = numOfNightsText.match(/[$€£]/g)
-        if (! currencyMatches) {
+        if (!currencyMatches) {
             return false
         }
 
@@ -174,11 +176,9 @@ function modifyPerNightPrice() {
             style: 'currency',
             currency: currencyCode,
             minimumFractionDigits: Number.isInteger(realPricePerNight) ? 0 : 2,
-            maximumFractionDigits: Number.isInteger(realPricePerNight) ? 0 : 2
+            maximumFractionDigits: Number.isInteger(realPricePerNight) ? 0 : 2,
         }
         const formattedRealPricePerNight = realPricePerNight.toLocaleString(languageCode, localeStringOptions)
-
-        console.log('real price per night:', formattedRealPricePerNight)
 
         $originalPerNightPriceSpan.text(formattedRealPricePerNight).addClass(HAS_BEEN_MODIFIED_CLASS)
         $originalPerNightSpan.text(WITH_FEES).addClass(HAS_BEEN_MODIFIED_CLASS)

@@ -6,7 +6,7 @@
     "parserOptions": {
         "ecmaVersion": 6
     },
-    "extends": "eslint:recommended",
+    "extends": ["wesbos"],
     "globals": {
         "$": false
     },
@@ -30,7 +30,6 @@
         "semi": ["error", "never"],
         "object-curly-spacing": ["error", "always"],
         "space-in-parens": ["error", "never"],
-        "comma-dangle": ["error", "never"],
         "no-trailing-spaces": "error",
         "curly": "error",
         "keyword-spacing": [
@@ -61,13 +60,20 @@
         ],
         "quotes": ["error", "single"],
         "no-console": "off",
-        "space-unary-ops": [
-            2,
+        "no-use-before-define": [
+            "error",
             {
-                "overrides": {
-                    "!": true,
-                    "!!": true
-                }
+                "functions": false
+            }
+        ],
+        "prettier/prettier": [
+            "error",
+            {
+                "trailingComma": "es5",
+                "singleQuote": true,
+                "printWidth": 120,
+                "tabWidth": 4,
+                "semi": false
             }
         ]
     }

@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "dist": true,
+        "node_modules": true,
+        "upload-me-to-the-browser-web-stores.zip": true
+    }
+}
