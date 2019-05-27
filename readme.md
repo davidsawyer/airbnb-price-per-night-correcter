@@ -16,7 +16,7 @@ If you like this project, [send me a tip 🙏🏼](https://www.paypal.me/davidsa
 
 Ever get sick of Airbnb showing you the price per night of a listing and NOT including the taxes and fees in that nightly price? It's misleading, right? No one likes the feeling of getting nickeled and dimed when they're trying to book lodging, especially when those extra fees can make a massive difference in the price per night of the stay. This extension fixes all of that and will hopefully protect you from being fooled into paying more per night of your Airbnb stay than you had originally planned. It will show you the all-in price per night of any Airbnb listing.
 
-Note: USD, EUR, and GBP are the only officially supported currencies at the moment. English and French are the only supported languages.
+Note: USD, EUR, and GBP are the only officially supported currencies at the moment. English, Spanish, and French are the only supported languages.
 
 ## building and running locally
 
@@ -36,10 +36,10 @@ In order to get up and running locally, you'll need to:
 
 -   [ ] handle monthly price
 -   [ ] add support for Airbnb Plus
--   [ ] add Spanish translation
--   [ ] handle all currencies
+-   [ ] handle more currencies
 -   [ ] investigate showing the correct price per night for all listings on the search page
 
 ## thanks
 
 -   [Alex Hofsteede](https://github.com/alex-hofsteede)
+-   Jamel Boubakri

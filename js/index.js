@@ -11,23 +11,33 @@ const i18n = {
         PER_NIGHT: 'per night',
         TOTAL: 'Total',
         WITHOUT_FEES: 'per night (without fees)',
-        WITH_FEES: 'per night, including fees'
+        WITH_FEES: 'per night, including fees',
+    },
+    es: {
+        PER_NIGHT: 'por noche',
+        TOTAL: 'Total',
+        WITHOUT_FEES: 'por noche (sin cuota de servicio)',
+        WITH_FEES: 'por noche, con cuota de servicio',
     },
     fr: {
         PER_NIGHT: 'par nuit',
         TOTAL: 'Total',
         WITHOUT_FEES: 'par nuit (hors frais de service)',
-        WITH_FEES: 'par nuit, frais de service inclus'
-    }
+        WITH_FEES: 'par nuit, frais de service inclus',
+    },
 }
 
 const currencyCodes = {
     $: 'USD',
+
     '€': 'EUR',
-    '£': 'GBP'
+    '£': 'GBP',
 }
 
-const potentialLanguageCode = $('html').attr('lang')
+const rawPotentialLanguageCode = $('html').attr('lang') || ''
+const potentialLanguageCode = rawPotentialLanguageCode.includes('-')
+    ? rawPotentialLanguageCode.substring(0, rawPotentialLanguageCode.indexOf('-'))
+    : rawPotentialLanguageCode
 const languageCode = Object.keys(i18n).includes(potentialLanguageCode) ? potentialLanguageCode : 'en'
 const translationObj = i18n[languageCode]
 const { PER_NIGHT, TOTAL, WITHOUT_FEES, WITH_FEES } = translationObj
