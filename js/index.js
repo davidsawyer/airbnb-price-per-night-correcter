@@ -6,30 +6,34 @@ console.log = function(...params) {
     }
 }
 
+const DAY_MILLIS = 86400000
+
 const i18n = {
     en: {
         PER_NIGHT: 'per night',
+        SLASH_NIGHT: '/ night',
         TOTAL: 'Total',
-        WITHOUT_FEES: 'per night (without fees)',
-        WITH_FEES: 'per night, including fees',
+        WITHOUT_FEES: '/ night (without fees)',
+        WITH_FEES: '/ night, including fees',
     },
     es: {
         PER_NIGHT: 'por noche',
+        SLASH_NIGHT: '/noche',
         TOTAL: 'Total',
-        WITHOUT_FEES: 'por noche (sin cuota de servicio)',
-        WITH_FEES: 'por noche, con cuota de servicio',
+        WITHOUT_FEES: '/noche (sin cuota de servicio)',
+        WITH_FEES: '/noche, con cuota de servicio',
     },
     fr: {
         PER_NIGHT: 'par nuit',
+        SLASH_NIGHT: '/ nuit',
         TOTAL: 'Total',
-        WITHOUT_FEES: 'par nuit (hors frais de service)',
-        WITH_FEES: 'par nuit, frais de service inclus',
+        WITHOUT_FEES: '/ nuit (hors frais de service)',
+        WITH_FEES: '/ nuit, frais de service inclus',
     },
 }
 
 const currencyCodes = {
     $: 'USD',
-
     '€': 'EUR',
     '£': 'GBP',
 }
@@ -40,7 +44,10 @@ const potentialLanguageCode = rawPotentialLanguageCode.includes('-')
     : rawPotentialLanguageCode
 const languageCode = Object.keys(i18n).includes(potentialLanguageCode) ? potentialLanguageCode : 'en'
 const translationObj = i18n[languageCode]
-const { PER_NIGHT, TOTAL, WITHOUT_FEES, WITH_FEES } = translationObj
+const { PER_NIGHT, SLASH_NIGHT, TOTAL, WITHOUT_FEES, WITH_FEES } = translationObj
+
+const CHECKMARK_ID = 'airbnb-price-per-night-correcter-checkmark'
+const HAS_BEEN_MODIFIED_CLASS = 'airbnb-price-per-night-correcter-has-modified-this'
 
 let containerPerNightPriceDivObserver
 
@@ -69,25 +76,32 @@ const fullPageObserver = new MutationObserver(() => {
         if (!containerPerNightPriceDivObserver || currentViewportState !== lastViewportState) {
             // attempt to modify the price in case we're returning to a wider viewport from
             // a skinner one where there was no visible book_it_form
-            const result = modifyPerNightPrice()
+            const result = attemptToModifyPerNightPrice()
             if (result) {
-                const containerPerNightPriceDiv = $form
-                    .prev()
-                    .find('div')
-                    .first()[0]
+                const containerPerNightPriceDiv = $form.closest('div')[0]
                 containerPerNightPriceDivObserver = new MutationObserver(handleMutations)
                 containerPerNightPriceDivObserver.observe(containerPerNightPriceDiv, { childList: true, subtree: true })
             }
         }
-    } else if (!$form.length && containerPerNightPriceDivObserver) {
+    } else if (!$form.length) {
         // if there's a skinny viewport
         containerPerNightPriceDivObserver = undefined
 
         // TODO: maybe make this selector a little more specific
-        $('#room')
-            .find(`:contains("${PER_NIGHT}")`)
+        let $perNightSpan = $('#room')
+            .find(`span:contains("${PER_NIGHT}"):not(:has(*))`)
             .last()
-            .text(WITHOUT_FEES)
+
+        // if no "per night" was found in a span, search for a "/ night" span instead
+        if (!$perNightSpan.length) {
+            $perNightSpan = $('#room')
+                .find(`span:contains("${SLASH_NIGHT}"):not(:has(*))`)
+                .last()
+        }
+
+        if (!$perNightSpan.hasClass(HAS_BEEN_MODIFIED_CLASS)) {
+            $perNightSpan.text(WITHOUT_FEES).addClass(HAS_BEEN_MODIFIED_CLASS)
+        }
     }
 
     lastViewportState = currentViewportState
@@ -98,10 +112,9 @@ fullPageObserver.observe($('body')[0], { childList: true, subtree: true })
 
 //----------------------------------------------------------------------------------------------------------------------
 
-const CHECKMARK_ID = 'airbnb-pernight-price-correcter-checkmark'
-const HAS_BEEN_MODIFIED_CLASS = 'airbnb-pernight-price-correcter-has-modified-this'
-
 function handleMutations(mutations) {
+    console.log('handling mutations')
+
     mutations.forEach(mutation => {
         if (mutation.addedNodes.length > 0) {
             // don't do anything when we add the checkmark div, or otherwise the browser will get
@@ -116,15 +129,15 @@ function handleMutations(mutations) {
                 mutation.addedNodes[0].classList &&
                 ![...mutation.addedNodes[0].classList.values()].includes(HAS_BEEN_MODIFIED_CLASS)
             ) {
-                modifyPerNightPrice()
+                attemptToModifyPerNightPrice()
             }
         }
         console.log(mutation)
     })
 }
 
-function modifyPerNightPrice() {
-    console.log('modifyPerNightPrice.............................')
+function attemptToModifyPerNightPrice() {
+    console.log('attemptToModifyPerNightPrice.............................')
 
     const $form = $('#book_it_form')
     if (!$form.length) {
@@ -132,49 +145,70 @@ function modifyPerNightPrice() {
     }
 
     const $originalPerNightPriceDiv = $form
-        .prev()
+        .closest('div')
         .find(`:contains("${PER_NIGHT}")`)
         .first()
+
     if (!$originalPerNightPriceDiv.length) {
-        console.log('Can\'t find "per night", or it\'s not in English. Stopping!')
+        console.log('Can\'t find "per night", or it\'s not in a supported language. Stopping!')
         return false
     }
 
     const originalPerNightPriceDivText = $originalPerNightPriceDiv.text()
-    // there a hidden div before the nightly price that typically says something like "Price:"
-    const priceStartIndex = originalPerNightPriceDivText.indexOf(':') + 1
+
+    // There is a hidden div before the nightly price that typically says something like "Price:".
+    // If it's a discounted listing, it will have something like "Previous price:$99 Discounted price:",
+    // so that's why we want to check for the last index, so we can capture that potentially discounted price.
+    const priceStartIndex = originalPerNightPriceDivText.lastIndexOf(':') + 1
     const priceEndIndex = originalPerNightPriceDivText.indexOf(PER_NIGHT)
     const originalPerNightPrice = originalPerNightPriceDivText.substring(priceStartIndex, priceEndIndex).trim()
 
     console.log('original per night price:', originalPerNightPrice)
 
-    const totalPrice = safeParseFloat(
-        $form
-            .find(`div:contains("${TOTAL}")`)
-            .last()
-            .next()
-            .text()
-    )
+    const totalPriceText = $form
+        .find(`div:contains("${TOTAL}")`)
+        .last()
+        .next()
+        .text()
+    const totalPrice = safeParseFloat(totalPriceText)
 
+    console.log('total price text:', totalPriceText)
     console.log('total price:', totalPrice)
 
-    const $originalPerNightPriceSpan = $originalPerNightPriceDiv
-        .find(`:contains("${originalPerNightPrice}"):not(:has(*))`)
+    const $originalPriceSpan = $originalPerNightPriceDiv
+        .find(`:contains("${originalPerNightPrice}"):not(:has(*))`) // find leaf node with original price
         .last()
-    const $originalPerNightSpan = $originalPerNightPriceDiv.find(`:contains(${PER_NIGHT}):not(:has(*))`).last()
 
-    const numOfNightsText = $form
-        .find(':contains(" x ")')
-        .last()
-        .text()
+    if ($originalPriceSpan.hasClass(HAS_BEEN_MODIFIED_CLASS)) {
+        return false
+    }
 
-    // if the length of stay has already been set by the user
-    if (numOfNightsText) {
-        const numOfNights = safeParseFloat(numOfNightsText.match(/ x \d+/g, '')[0])
+    // find leaf node with "per night" or applicable phrase
+    let $originalPerNightSpan = $originalPerNightPriceDiv.find(`span:contains(${PER_NIGHT}):not(:has(*))`).last()
+    let isDiscountedListing = false
+
+    // if no "per night" was found in a span, it must be a discounted listing, so search for a "/ night" span instead
+    if (!$originalPerNightSpan.length) {
+        console.log('we got ourselves a pesky discounted listing!')
+        $originalPerNightSpan = $originalPerNightPriceDiv.find(`span:contains(${SLASH_NIGHT}):not(:has(*))`).last()
+        isDiscountedListing = true
+    }
+
+    // grab the number of nights from doing date math on the check_out/check_in URL params because the number of nights
+    // text might be hidden and not anywhere in the DOM
+    const urlParams = new URLSearchParams(new URL(window.location).search)
+    const checkOutDateString = urlParams.get('check_out')
+    const checkInDateString = urlParams.get('check_in')
+
+    // if the length of stay has been set by the user
+    if (checkOutDateString && checkInDateString) {
+        // the difference between the first day and last day
+        const numOfNights =
+            (new Date(checkOutDateString).getTime() - new Date(checkInDateString).getTime()) / DAY_MILLIS
 
         console.log('number of nights:', numOfNights)
 
-        const currencyMatches = numOfNightsText.match(/[$€£]/g)
+        const currencyMatches = totalPriceText.match(/[$€£]/g)
         if (!currencyMatches) {
             return false
         }
@@ -194,9 +228,20 @@ function modifyPerNightPrice() {
         }
         const formattedRealPricePerNight = realPricePerNight.toLocaleString(languageCode, localeStringOptions)
 
-        $originalPerNightPriceSpan.text(formattedRealPricePerNight).addClass(HAS_BEEN_MODIFIED_CLASS)
+        $originalPriceSpan.text(formattedRealPricePerNight).addClass(HAS_BEEN_MODIFIED_CLASS)
         $originalPerNightSpan.text(WITH_FEES).addClass(HAS_BEEN_MODIFIED_CLASS)
-        $originalPerNightSpan.after(`<div id="${CHECKMARK_ID}" class={"${HAS_BEEN_MODIFIED_CLASS}"}></div>`)
+        $originalPerNightSpan.after(`<div id="${CHECKMARK_ID}" class="${HAS_BEEN_MODIFIED_CLASS}"></div>`)
+
+        if (isDiscountedListing) {
+            // obliterate struck-through price span's container div
+            const $leafSpans = $originalPerNightPriceDiv.find('span:not(:has(*))')
+            $leafSpans.each(function() {
+                const $span = $(this)
+                if ($span.css('text-decoration').includes('line-through')) {
+                    $span.closest('div').remove()
+                }
+            })
+        }
     } else {
         $originalPerNightSpan.text(WITHOUT_FEES).addClass(HAS_BEEN_MODIFIED_CLASS)
     }

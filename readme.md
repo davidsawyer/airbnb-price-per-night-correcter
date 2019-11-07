@@ -16,6 +16,13 @@ If you like this project, [send me a tip 🙏🏼](https://www.paypal.me/davidsa
 
 Ever get sick of Airbnb showing you the price per night of a listing and NOT including the taxes and fees in that nightly price? It's misleading, right? No one likes the feeling of getting nickeled and dimed when they're trying to book lodging, especially when those extra fees can make a massive difference in the price per night of the stay. This extension fixes all of that and will hopefully protect you from being fooled into paying more per night of your Airbnb stay than you had originally planned. It will show you the all-in price per night of any Airbnb listing.
 
+APPNC corrects prices in the following situations:
+
+1. basic listings
+1. on sale listings
+1. listings with a cancellation policy (hidden price details)
+1. plus listings
+
 Note: USD, EUR, and GBP are the only officially supported currencies at the moment. English, Spanish, and French are the only supported languages.
 
 ## building and running locally
@@ -25,21 +32,20 @@ In order to get up and running locally, you'll need to:
 1.  pull down the project
 1.  if you use nvm, run `nvm use` to make sure you're on a compatible version of node
 1.  run `npm install` from the project root
-1.  make sure gulp is installed globally: `npm install -g gulp`
-1.  run `gulp` (this will build the js file and css file that the browser will use and will continue to listen to changes to source files)
+1.  run `npm run develop` (this will build the JS and CSS that the browser will use and then will continue to listen to changes to source files)
 1.  go to `chrome://extensions` in Chrome or `about:debugging` in Firefox
 1.  make sure "Developer mode" is on if you're on Chrome
 1.  click "Load unpacked extension..." on Chrome or "Load Temporary Add-on" on Firefox
-1.  choose the project root directory for Chrome or a zipped directory by gulp for Firefox (via `gulp prod`), and you should be good to go!
+1.  choose the project root directory for Chrome or a zipped directory by gulp for Firefox (you can create a zipped directory for Firefox by running `npm run prod`), and you should now be able to run the extension in your browser!
 
 ## todos
 
+-   [ ] investigate showing the correct nightly price for all listings on the search page
 -   [ ] handle monthly price
--   [ ] add support for Airbnb Plus
 -   [ ] handle more currencies
--   [ ] investigate showing the correct price per night for all listings on the search page
 
 ## thanks
 
--   [Alex Hofsteede](https://github.com/alex-hofsteede)
--   Jamel Boubakri
+-   Nick Beyer - bug hunter
+-   [Alex Hofsteede](https://github.com/alex-hofsteede) - code contributions
+-   Jamel Boubakri - translation

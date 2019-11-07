@@ -1,6 +1,6 @@
 {
     "name": "airbnb-price-per-night-correcter",
-    "version": "0.4.2",
+    "version": "0.5.0",
     "description": "Gives you the real price per night of an Airbnb stay after accounting for any and all fees",
     "main": "index.js",
     "author": "David Sawyer",
@@ -10,7 +10,14 @@
         "url": "https://github.com/davidsawyer/airbnb-price-per-night-correcter.git"
     },
     "engines": {
-        "node": "^5.3"
+        "node": "9.11.x"
+    },
+    "bin": {
+        "gulp": "node_modules/gulp/bin/gulp.js"
+    },
+    "scripts": {
+        "develop": "gulp",
+        "prod": "gulp prod"
     },
     "dependencies": {
         "del": "^2.2.0",
