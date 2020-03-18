@@ -22,6 +22,7 @@ APPNC corrects prices in the following situations:
 1. on sale listings
 1. listings with a cancellation policy (hidden price details)
 1. plus listings
+1. handling of a more whitespace-heavy UI that seems to be the treatment side of an A/B test ([before](https://i.imgur.com/LCilfk8.png) vs. [after](https://i.imgur.com/QooSEui.jpg))
 
 Note: USD, EUR, and GBP are the only officially supported currencies at the moment. English, Spanish, and French are the only supported languages.
 
@@ -40,7 +41,7 @@ In order to get up and running locally, you'll need to:
 
 ## todos
 
--   [ ] investigate showing the correct nightly price for all listings on the search page
+-   [ ] investigate showing the correct nightly price for all listings on the search page (seemed VERY infeasible when I last checked)
 -   [ ] handle monthly price
 -   [ ] handle more currencies
 

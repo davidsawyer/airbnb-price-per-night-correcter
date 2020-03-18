@@ -1,4 +1,4 @@
-const DEBUG_MODE = false
+const DEBUG_MODE = false // change this to true if you want to see debug logs in the JS console!
 const oldCL = console.log
 console.log = function(...params) {
     if (DEBUG_MODE) {
@@ -50,6 +50,7 @@ const CHECKMARK_ID = 'airbnb-price-per-night-correcter-checkmark'
 const HAS_BEEN_MODIFIED_CLASS = 'airbnb-price-per-night-correcter-has-modified-this'
 
 let containerPerNightPriceDivObserver
+let bookItElementSelector
 
 const VIEWPORT = Object.freeze({
     SKINNY: 'SKINNY',
@@ -61,7 +62,16 @@ let lastViewportState
 let currentViewportState
 
 const fullPageObserver = new MutationObserver(() => {
-    const $form = $('#book_it_form')
+    if (!bookItElementSelector) {
+        if ($('#book_it_form').length) {
+            bookItElementSelector = '#book_it_form'
+        } else if ($('[data-plugin-in-point-id="BOOK_IT_SIDEBAR"]').length) {
+            bookItElementSelector = '[data-plugin-in-point-id="BOOK_IT_SIDEBAR"]'
+        }
+        console.log('here is our chosen bookItElementSelector:', bookItElementSelector)
+    }
+
+    const $form = $(bookItElementSelector)
     if ($form.length) {
         if ($form.closest('#room').length) {
             currentViewportState = VIEWPORT.WIDE
@@ -139,18 +149,26 @@ function handleMutations(mutations) {
 function attemptToModifyPerNightPrice() {
     console.log('attemptToModifyPerNightPrice.............................')
 
-    const $form = $('#book_it_form')
+    const $form = $(bookItElementSelector)
     if (!$form.length) {
+        console.log('Couldn\'t find "book it" form! Stopping.')
         return false
     }
 
-    const $originalPerNightPriceDiv = $form
-        .closest('div')
-        .find(`:contains("${PER_NIGHT}")`)
-        .first()
+    // Airbnb does something with accessibility where they will have an element that will often contain "per night",
+    // but it'll have a very small height, often just one pixel tall. We don't want to grab that element; we want the
+    // one that the user actually sees. So let's just get all the elements in the form that are saying either "per
+    // night" or "/ night" and then get the actually visible element from that list.
+    const originalPerNightPriceDivCandidates = [...$form.closest('div').find(`:contains("${PER_NIGHT}")`)].concat([
+        ...$form.closest('div').find(`:contains("${SLASH_NIGHT}")`),
+    ])
+    const perNightleafNode = originalPerNightPriceDivCandidates.filter(
+        div => $(div).height() > 4 && !$(div).children().length
+    )
+    const $originalPerNightPriceDiv = $(perNightleafNode).closest('div')
 
     if (!$originalPerNightPriceDiv.length) {
-        console.log('Can\'t find "per night", or it\'s not in a supported language. Stopping!')
+        console.log('Can\'t find "per night" nor "/ night", or it\'s not in a supported language. Stopping!')
         return false
     }
 
@@ -160,16 +178,50 @@ function attemptToModifyPerNightPrice() {
     // If it's a discounted listing, it will have something like "Previous price:$99 Discounted price:",
     // so that's why we want to check for the last index, so we can capture that potentially discounted price.
     const priceStartIndex = originalPerNightPriceDivText.lastIndexOf(':') + 1
-    const priceEndIndex = originalPerNightPriceDivText.indexOf(PER_NIGHT)
-    const originalPerNightPrice = originalPerNightPriceDivText.substring(priceStartIndex, priceEndIndex).trim()
+    const priceEndIndex =
+        originalPerNightPriceDivText.indexOf(PER_NIGHT) !== -1
+            ? originalPerNightPriceDivText.indexOf(PER_NIGHT)
+            : originalPerNightPriceDivText.indexOf(SLASH_NIGHT)
+    const dirtyOriginalPerNightPrice = originalPerNightPriceDivText.substring(priceStartIndex, priceEndIndex).trim()
+
+    const currencyMatches = dirtyOriginalPerNightPrice.match(/[$€£]/g)
+    if (!currencyMatches) {
+        console.log('Could not match on a currency symbol. Stopping!')
+        return false
+    }
+
+    const currencySign = currencyMatches[0]
+    const currencyCode = currencyCodes[currencySign]
+
+    console.log('currency sign:', currencySign)
+
+    // the dirtyOriginalPerNightPrice could have multiple prices in it if it was a discounted listed, so we just want
+    // to grab the latter, non-crossed-out price to be our originalPerNightPrice
+    const originalPerNightPrice = dirtyOriginalPerNightPrice
+        .substring(dirtyOriginalPerNightPrice.lastIndexOf(currencySign))
+        .trim()
 
     console.log('original per night price:', originalPerNightPrice)
 
-    const totalPriceText = $form
-        .find(`div:contains("${TOTAL}")`)
+    const $totalText = $form
+        .find(`:contains("${TOTAL}"):not(:has(*))`) // find leaf node that contains the word "total"
         .last()
-        .next()
-        .text()
+
+    let totalPriceText
+    let totalPriceTextCandidate = $totalText.parent()
+    for (let i = 0; i < 5; i++) {
+        if (totalPriceTextCandidate.text().length > TOTAL.length + 2) {
+            totalPriceText = totalPriceTextCandidate.text()
+            break
+        }
+        totalPriceTextCandidate = totalPriceTextCandidate.parent()
+    }
+
+    if (!totalPriceText) {
+        console.log('Could not find the total price. Something is screwed up with the code directly above.')
+        return
+    }
+
     const totalPrice = safeParseFloat(totalPriceText)
 
     console.log('total price text:', totalPriceText)
@@ -183,7 +235,7 @@ function attemptToModifyPerNightPrice() {
         return false
     }
 
-    // find leaf node with "per night" or applicable phrase
+    // find leaf node with "per night" or similar phrase
     let $originalPerNightSpan = $originalPerNightPriceDiv.find(`span:contains(${PER_NIGHT}):not(:has(*))`).last()
     let isDiscountedListing = false
 
@@ -208,16 +260,6 @@ function attemptToModifyPerNightPrice() {
 
         console.log('number of nights:', numOfNights)
 
-        const currencyMatches = totalPriceText.match(/[$€£]/g)
-        if (!currencyMatches) {
-            return false
-        }
-
-        const currencySign = currencyMatches[0]
-        const currencyCode = currencyCodes[currencySign]
-
-        console.log('currency sign:', currencySign)
-
         const realPricePerNight = totalPrice / numOfNights
 
         const localeStringOptions = {
@@ -238,7 +280,7 @@ function attemptToModifyPerNightPrice() {
             $leafSpans.each(function() {
                 const $span = $(this)
                 if ($span.css('text-decoration').includes('line-through')) {
-                    $span.closest('div').remove()
+                    $span.remove()
                 }
             })
         }

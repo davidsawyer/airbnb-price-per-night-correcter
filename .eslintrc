@@ -66,6 +66,7 @@
                 "functions": false
             }
         ],
+        "no-plusplus": "off",
         "prettier/prettier": [
             "error",
             {
