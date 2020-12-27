@@ -23,6 +23,7 @@ APPNC corrects prices in the following situations:
 1. listings with a cancellation policy (hidden price details)
 1. plus listings
 1. handling of a more whitespace-heavy UI that seems to be the treatment side of an A/B test ([before](https://i.imgur.com/LCilfk8.png) vs. [after](https://i.imgur.com/QooSEui.jpg))
+1. non-refundable/refundable radio button UI
 
 Note: USD, EUR, and GBP are the only officially supported currencies at the moment. English, Spanish, and French are the only supported languages.
 

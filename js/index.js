@@ -203,6 +203,34 @@ function attemptToModifyPerNightPrice() {
 
     console.log('original per night price:', originalPerNightPrice)
 
+    const $originalPriceSpan = $originalPerNightPriceDiv
+        .find(`:contains("${originalPerNightPrice}"):not(:has(*))`) // find leaf node with original price
+        .last()
+
+    // find leaf node with "per night" or similar phrase
+    let $originalPerNightSpan = $originalPerNightPriceDiv.find(`span:contains(${PER_NIGHT}):not(:has(*))`).last()
+
+    let isDiscountedListing = false
+
+    // if no "per night" was found in a span, it might be a discounted listing, so search for a "/ night" span instead
+    if (!$originalPerNightSpan.length) {
+        console.log('we got ourselves a pesky discounted listing!')
+        $originalPerNightSpan = $originalPerNightPriceDiv.find(`span:contains(${SLASH_NIGHT}):not(:has(*))`).last()
+        isDiscountedListing = true
+    }
+
+    // grab the number of nights from doing date math on the check_out/check_in URL params because the number of nights
+    // text might be hidden and not anywhere in the DOM
+    const urlParams = new URLSearchParams(new URL(window.location).search)
+    const checkOutDateString = urlParams.get('check_out')
+    const checkInDateString = urlParams.get('check_in')
+
+    // if the length of stay has been set by the user
+    if (!checkOutDateString && !checkInDateString) {
+        $originalPerNightSpan.text(WITHOUT_FEES).addClass(HAS_BEEN_MODIFIED_CLASS)
+        return true
+    }
+
     const $totalText = $form
         .find(`:contains("${TOTAL}"):not(:has(*))`) // find leaf node that contains the word "total"
         .last()
@@ -227,65 +255,41 @@ function attemptToModifyPerNightPrice() {
     console.log('total price text:', totalPriceText)
     console.log('total price:', totalPrice)
 
-    const $originalPriceSpan = $originalPerNightPriceDiv
-        .find(`:contains("${originalPerNightPrice}"):not(:has(*))`) // find leaf node with original price
-        .last()
+    // the difference between the first day and last day
+    const numOfNights = (new Date(checkOutDateString).getTime() - new Date(checkInDateString).getTime()) / DAY_MILLIS
 
-    if ($originalPriceSpan.hasClass(HAS_BEEN_MODIFIED_CLASS)) {
-        return false
+    console.log('number of nights:', numOfNights)
+
+    const realPricePerNight = totalPrice / numOfNights
+
+    console.log('real price per night, unformatted:', realPricePerNight)
+
+    const localeStringOptions = {
+        style: 'currency',
+        currency: currencyCode,
+        minimumFractionDigits: Number.isInteger(realPricePerNight) ? 0 : 2,
+        maximumFractionDigits: Number.isInteger(realPricePerNight) ? 0 : 2,
     }
+    const formattedRealPricePerNight = realPricePerNight.toLocaleString(languageCode, localeStringOptions)
 
-    // find leaf node with "per night" or similar phrase
-    let $originalPerNightSpan = $originalPerNightPriceDiv.find(`span:contains(${PER_NIGHT}):not(:has(*))`).last()
-    let isDiscountedListing = false
+    console.log('🏁 formatted real price per night 🏁:', formattedRealPricePerNight)
 
-    // if no "per night" was found in a span, it must be a discounted listing, so search for a "/ night" span instead
-    if (!$originalPerNightSpan.length) {
-        console.log('we got ourselves a pesky discounted listing!')
-        $originalPerNightSpan = $originalPerNightPriceDiv.find(`span:contains(${SLASH_NIGHT}):not(:has(*))`).last()
-        isDiscountedListing = true
-    }
+    $originalPriceSpan.text(formattedRealPricePerNight).addClass(HAS_BEEN_MODIFIED_CLASS)
+    $originalPerNightSpan.text(WITH_FEES).addClass(HAS_BEEN_MODIFIED_CLASS)
 
-    // grab the number of nights from doing date math on the check_out/check_in URL params because the number of nights
-    // text might be hidden and not anywhere in the DOM
-    const urlParams = new URLSearchParams(new URL(window.location).search)
-    const checkOutDateString = urlParams.get('check_out')
-    const checkInDateString = urlParams.get('check_in')
-
-    // if the length of stay has been set by the user
-    if (checkOutDateString && checkInDateString) {
-        // the difference between the first day and last day
-        const numOfNights =
-            (new Date(checkOutDateString).getTime() - new Date(checkInDateString).getTime()) / DAY_MILLIS
-
-        console.log('number of nights:', numOfNights)
-
-        const realPricePerNight = totalPrice / numOfNights
-
-        const localeStringOptions = {
-            style: 'currency',
-            currency: currencyCode,
-            minimumFractionDigits: Number.isInteger(realPricePerNight) ? 0 : 2,
-            maximumFractionDigits: Number.isInteger(realPricePerNight) ? 0 : 2,
-        }
-        const formattedRealPricePerNight = realPricePerNight.toLocaleString(languageCode, localeStringOptions)
-
-        $originalPriceSpan.text(formattedRealPricePerNight).addClass(HAS_BEEN_MODIFIED_CLASS)
-        $originalPerNightSpan.text(WITH_FEES).addClass(HAS_BEEN_MODIFIED_CLASS)
+    if (!$(`#${CHECKMARK_ID}`).length) {
         $originalPerNightSpan.after(`<div id="${CHECKMARK_ID}" class="${HAS_BEEN_MODIFIED_CLASS}"></div>`)
+    }
 
-        if (isDiscountedListing) {
-            // obliterate struck-through price span's container div
-            const $leafSpans = $originalPerNightPriceDiv.find('span:not(:has(*))')
-            $leafSpans.each(function() {
-                const $span = $(this)
-                if ($span.css('text-decoration').includes('line-through')) {
-                    $span.remove()
-                }
-            })
-        }
-    } else {
-        $originalPerNightSpan.text(WITHOUT_FEES).addClass(HAS_BEEN_MODIFIED_CLASS)
+    if (isDiscountedListing) {
+        // obliterate struck-through price span's container div
+        const $leafSpans = $originalPerNightPriceDiv.find('span:not(:has(*))')
+        $leafSpans.each(function() {
+            const $span = $(this)
+            if ($span.css('text-decoration').includes('line-through')) {
+                $span.remove()
+            }
+        })
     }
 
     return true
