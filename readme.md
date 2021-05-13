@@ -1,4 +1,4 @@
-# Airbnb Price Per Night Correcter
+# Airbnb Price Per Night Corrector
 
 _A browser extension that gives you the real price per night of an Airbnb stay after accounting for any and all fees_
 
