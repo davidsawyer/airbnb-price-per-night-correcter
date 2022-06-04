@@ -8,7 +8,8 @@
     },
     "extends": ["wesbos"],
     "globals": {
-        "$": false
+        "$": false,
+        "chrome": false
     },
     "rules": {
         "no-extra-semi": "off",
@@ -58,7 +59,6 @@
                 "after": true
             }
         ],
-        "quotes": ["error", "single"],
         "no-console": "off",
         "no-use-before-define": [
             "error",

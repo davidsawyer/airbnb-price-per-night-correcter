@@ -1,4 +1,4 @@
-div#airbnb-price-per-night-correcter-checkmark {
+div.appnc-checkmark {
     display: inline-block;
     height: 14px;
     width: 18px;
@@ -7,4 +7,48 @@ div#airbnb-price-per-night-correcter-checkmark {
     background-position: 50%;
     background-repeat: no-repeat;
     background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMjAwJyBoZWlnaHQ9JzIwMCcgZmlsbD0iIzAwMDAwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDk1LjQ1MyAxMDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDk1LjQ1MyAxMDAiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxnPjxnPjxwb2x5Z29uIHBvaW50cz0iOTQuNTg3LDI3LjQ4IDMxLjY1Nyw4Ni4xNSAzMS4yMTcsODUuNjggMTguODQ3LDcyLjQxIDAuNTY2LDUyLjgxIDE0LjEwNiw0MC4xOSAzMi4zODcsNTkuNzkgODEuNzc2LDEzLjc0ICAgIi8+PC9nPjwvZz48L3N2Zz4=);
+}
+
+.appnc-tooltip {
+    position: relative;
+}
+
+/* Tooltip text */
+.appnc-tooltip .appnc-tooltiptext {
+    position: relative;
+    padding: 0.2rem 1rem;
+    font-weight: normal;
+    font-size: 1rem;
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 5px;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+
+    /* width: We get this from JS! */
+    /* margin-left: We get this from JS! */
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: 5px;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.appnc-tooltip:hover .appnc-tooltiptext {
+    visibility: visible;
+}
+
+.appnc-tooltip .appnc-tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
 }

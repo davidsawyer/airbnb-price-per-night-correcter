@@ -8,7 +8,7 @@ const temp = 'temp-wrapper-folder'
 
 const paths = {
     styles: ['css/*.css'],
-    indexScripts: ['node_modules/jquery/dist/jquery.js', 'js/index.js'],
+    indexScripts: ['node_modules/jquery/dist/jquery.js', 'js/index.js', 'js/background.js'],
     destination: 'dist',
 }
 
